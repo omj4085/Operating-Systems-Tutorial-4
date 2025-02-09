@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
 
   
     // Perform an infinite loop getting command input from users until the game ends
-    while (!game_over) {
+    while (game_over == false) {
         // Call functions from the questions and players source files
         display_categories();
 
