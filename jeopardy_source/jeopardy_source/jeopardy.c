@@ -144,7 +144,7 @@ int main(int argc, char *argv[]) {
             printf("Incorrect! Continuing game.\n");
         }
 
-        // Check if the game should end
+        //check for game's end
         if (total_answered >= TOTAL_QUESTIONS) {
             game_over = true;
         }
