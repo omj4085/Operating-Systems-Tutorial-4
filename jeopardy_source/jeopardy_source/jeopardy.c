@@ -29,7 +29,7 @@ void show_results(player *players, int num_players);
 int main(int argc, char *argv[])
 {
     // An array of 4 players, may need to be a pointer if you want it set dynamically
-    player players[NUM_PLAYERS];
+    struct player players[NUM_PLAYERS]; //supposed to be a struct?
     
     // Input buffer and and commands
     char buffer[BUFFER_LEN] = { 0 };
@@ -38,6 +38,11 @@ int main(int argc, char *argv[])
     initialize_game();
 
     // Prompt for players names
+    for (int i=0; i<4; i++){
+        printf("Enter first name of player %d: ", i+1);
+        scanf("%s", players[i].name);
+    }
+        
     
     // initialize each of the players in the array
 
