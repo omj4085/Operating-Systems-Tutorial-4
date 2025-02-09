@@ -132,10 +132,9 @@ int main(int argc, char *argv[]) {
         printf("Your answer: ");
         fgets(answer, BUFFER_LEN, stdin);
         answer[strcspn(answer, "\n")] = '\0';  
-        valid_answer(category, value, answer)
-
+       
         //check if the answer is correct
-        if (strcmp(answer, correct_answer) == 0) {
+        if (valid_answer(category, value, answer) == true) {
             printf("Correct! You earned %d points.\n", value);
             //add points to player
             update_score(players, NUM_PLAYERS, name, value);  
