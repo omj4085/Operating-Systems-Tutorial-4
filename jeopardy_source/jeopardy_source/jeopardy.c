@@ -54,41 +54,106 @@ void show_results(player *players, int num_players){
   
   //print ranks
   printf("Game Result: ");
-  for (inti=0; i<num_players; i++){
+  for (int i=0; i<num_players; i++){
     printf("Name: %s  Final Score: %d \n", players[i].name, players[i].score);
   }
       
 }
 
-
-int main(int argc, char *argv[])
-{
-    // An array of 4 players, may need to be a pointer if you want it set dynamically
+int main(int argc, char *argv[]) {
+    // An array of 4 players
     struct player players[NUM_PLAYERS]; 
     
-    // Input buffer and and commands
+    // Input buffer and commands
     char buffer[BUFFER_LEN] = { 0 };
 
     // Display the game introduction and initialize the questions
     initialize_game();
 
-    // Prompt for players names
-    for (int i=0; i<4; i++){
-        printf("Enter first name of player %d: ", i+1);
-        scanf("%s", players[i].name);
+    // Prompt for players' names
+    for (int i = 0; i < NUM_PLAYERS; i++) {
+        printf("Enter name of player %d: ", i + 1);
+        fgets(players[i].name, BUFFER_LEN, stdin);
+        players[i].name[strcspn(players[i].name, "\n")] = '\0'; //remove newline character
+        players[i].score = 0;  //initialize each player's score
     }
-        
-    
-    // initialize each of the players in the array
 
-    // Perform an infinite loop getting command input from users until game ends
-    while (fgets(buffer, BUFFER_LEN, stdin) != NULL)
-    {
+    bool game_over = false;
+    int total_answered = 0; //track the total number of answered questions; when 12 questions are answered, game over
+
+
+  
+    // Perform an infinite loop getting command input from users until the game ends
+    while (!game_over) {
         // Call functions from the questions and players source files
+        display_categories();
 
-        // Execute the game until all questions are answered
+        //loop to check if input is correct by calling player_exists() and try again if name is invalid
+        int exit_loop = 0;
+        while (exit_loop == 0) { 
+            printf("Enter name of selected player: ");
+            char name[BUFFER_LEN];
+            fgets(name, BUFFER_LEN, stdin);
+            name[strcspn(name, "\n")] = '\0'; //remove newline character
+            
+            if (player_exists(players, NUM_PLAYERS, name) == false) {
+                printf("Could not validate player. Try again.\n");
+            } else {
+                exit_loop = 1;
+            }
+        }
+        
+        //get the selected category and dollar amount question
+        char category[BUFFER_LEN];
+        int value;
+        
+        printf("Enter selected category: ");
+        fgets(category, BUFFER_LEN, stdin);
+        category[strcspn(category, "\n")] = '\0'; //remove newline character
+        
+        exit_loop = 0; //loop to check if question has already been answered
+        while (exit_loop == 0) {
+            printf("Enter selected dollar amount question: ");
+            fgets(buffer, BUFFER_LEN, stdin);
+            sscanf(buffer, "%d", &value); 
+            
+            if (already_answered(category, value) == true) {
+                printf("Already answered. Pick another.\n");
+            } else {
+                exit_loop = 1;
+            }
+        }
 
-        // Display the final results and exit
+        //display the selected question
+        display_question(category, value);
+        
+        //ask the selected player to answer
+        char answer[BUFFER_LEN];
+        printf("Your answer: ");
+        fgets(answer, BUFFER_LEN, stdin);
+        answer[strcspn(answer, "\n")] = '\0';  
+        valid_answer(category, value, answer)
+
+        //check if the answer is correct
+        if (strcmp(answer, correct_answer) == 0) {
+            printf("Correct! You earned %d points.\n", value);
+            //add points to player
+            update_score(players, NUM_PLAYERS, name, value);  
+            total_answered++; //increment total answered questions
+        } else {
+            printf("Incorrect! Continuing game.\n");
+        }
+
+        // Check if the game should end
+        if (total_answered >= TOTAL_QUESTIONS) {
+            game_over = true;
+        }
+
+        // Display the final results and exit if game is over
+        if (game_over) {
+            show_results(players, num_players);
+        }
     }
+
     return EXIT_SUCCESS;
 }
