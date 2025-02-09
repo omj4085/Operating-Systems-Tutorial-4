@@ -144,7 +144,7 @@ int main(int argc, char *argv[]) {
         }
 
         //check for game's end
-        if (total_answered >= 12) {
+        if (total_answered == 12) {
             game_over = true;
         }
 
