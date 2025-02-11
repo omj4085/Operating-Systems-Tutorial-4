@@ -9,8 +9,11 @@
 #define PLAYERS_H_
 
 #include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
 
 #define MAX_LEN 256
+#define NUM_PLAYERS 4
 
 // Player struct for each player
 typedef struct {
@@ -24,5 +27,8 @@ extern bool player_exists(player *players, int num_players, char *name);
 // Go through the list of players and update the score for the 
 // player given their name
 extern void update_score(player *players, int num_players, char *name, int score);
+
+//Displays the final results of all players
+extern void show_results(player *players, int num_players);
 
 #endif /* PLAYERS_H_ */
