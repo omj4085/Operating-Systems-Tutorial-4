@@ -21,6 +21,14 @@
 #include <string.h>
 #include "questions.h"
 
+question questions[NUM_QUESTIONS];
+
+char categories[NUM_CATEGORIES][MAX_LEN] = {
+    "Computers",
+    "Animals",
+    "Food"
+};
+
 // Initializes the array of questions for the game
 void initialize_game(void)
 {
