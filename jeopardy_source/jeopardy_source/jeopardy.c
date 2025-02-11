@@ -11,58 +11,103 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <string.h>
 #include <stdbool.h>
-#include "questions.h"
 #include "players.h"
+#include "questions.h"
 #include "jeopardy.h"
 
-// Put macros or constants here using #define
+// Define the consonants
 #define BUFFER_LEN 256
-#define NUM_PLAYERS 4
+#define QUESTION_BANK_SIZE 20  
+#define SELECTED_QUESTIONS 12  
+
+question question_bank[QUESTION_BANK_SIZE];
+int selected_questions[SELECTED_QUESTIONS];
+
+void alarm_handler(int sig) {
+    printf("\nTime's up! Moving to the next question.\n");
+}
+
+void shuffle_questions() {
+    srand(time(NULL));
+    // Initialize the selection array 
+    for (int i = 0; i < QUESTION_BANK_SIZE; i++) {
+        selected_questions[i] = i;
+    }
+    // Shuffle the question bank
+    for (int i = QUESTION_BANK_SIZE - 1; i > 0; i--) {
+        int j = rand() % (i + 1);
+        int temp = selected_questions[i];
+        selected_questions[i] = selected_questions[j];
+        selected_questions[j] = temp;
+    }
+}
+
+// void initialize_game() {
+   // char questions_text[QUESTION_BANK_SIZE][MAX_LEN] = { /* your questions */ };
+    // char answers_text[QUESTION_BANK_SIZE][MAX_LEN] = { /* your answers  */ };
+    // int values[] = {100, 200, 300, 400};
+
+    // for (int i = 0; i < QUESTION_BANK_SIZE; i++) {
+        //strncpy(question_bank[i].category, categories[i % NUM_CATEGORIES], MAX_LEN - 1);
+        //question_bank[i].category[MAX_LEN - 1] = '\0';
+        //strncpy(question_bank[i].question, questions_text[i], MAX_LEN - 1);
+        //question_bank[i].question[MAX_LEN - 1] = '\0';
+        //strncpy(question_bank[i].answer, answers_text[i], MAX_LEN - 1);
+        //question_bank[i].answer[MAX_LEN - 1] = '\0';
+        //question_bank[i].value = values[i % 4];
+      //  question_bank[i].answered = false;
+    //}
+
+  //  shuffle_questions(); // Shuffle after initializing all questions
+//}
 
 // Put global environment variables here
 
 // Processes the answer from the user containing what is or who is and tokenizes it to retrieve the answer.
-void tokenize(char *input, char **tokens){
+//void tokenize(char *input, char **tokens){
   
   //tokenizes using spaces
-  char *token = strtok(input, " ");
+  //char *token = strtok(input, " ");
   
-  token = strtok(NULL, " "); //gets rid of first word: what or who
-  token = strtok(NULL, " "); //gets rid of second word: is
+  //token = strtok(NULL, " "); //gets rid of first word: what or who
+  //token = strtok(NULL, " "); //gets rid of second word: is
   
   //third word should now be the answer
-  *tokens = token;
+  //*tokens = token;
   
-}
+//}
 
 // Displays the game results for each player, their name and final score, ranked from first to last place
-void show_results(player *players, int num_players){
+//void show_results(player *players, int num_players){
   
   //first to last place means descending score order
   //compare two players i and j
-  for (int i=0; i<num_players-1;i++){ 
-    for (int j=i+1; j<num_players; j++){
-      if (players[i].score < players[j].score){ //swap players[i] and players[j]
-        player temp = players[i];
-        players[i] = players[j];
-        players[j] = temp;
-      }
-    }
-  } 
+  //for (int i=0; i<num_players-1;i++){ 
+    //for (int j=i+1; j<num_players; j++){
+      //if (players[i].score < players[j].score){ //swap players[i] and players[j]
+        //player temp = players[i];
+        //players[i] = players[j];
+        //players[j] = temp;
+      //}
+    //}
+  //} 
   
   //print ranks
-  printf("Game Result: ");
-  for (int i=0; i<num_players; i++){
-    printf("Name: %s  Final Score: %d \n", players[i].name, players[i].score);
-  }
+  //printf("Game Result: ");
+  //for (int i=0; i<num_players; i++){
+    //printf("Name: %s  Final Score: %d \n", players[i].name, players[i].score);
+  //}
       
-}
-
+//}
 int main(int argc, char *argv[]) {
     // An array of 4 players
-    struct player players[NUM_PLAYERS]; 
+    player players[NUM_PLAYERS]; 
+
+    // Declare name buffer for player selection
+    char name[BUFFER_LEN];
     
     // Input buffer and commands
     char buffer[BUFFER_LEN] = { 0 };
@@ -147,12 +192,11 @@ int main(int argc, char *argv[]) {
         if (total_answered == 12) {
             game_over = true;
         }
-
-        // Display the final results and exit if game is over
-        if (game_over) {
-            show_results(players, num_players);
-        }
+       
     }
+
+    //Display final results
+    show_results(players, NUM_PLAYERS);
 
     return EXIT_SUCCESS;
 }
